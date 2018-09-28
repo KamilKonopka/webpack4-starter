@@ -6,6 +6,7 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const devMode = process.env.NODE_ENV === 'development';
 const port = process.env.PORT || 4200;
@@ -39,6 +40,11 @@ module.exports = {
             plainSprite: true
         })
   ],
+    optimization: {
+        minimizer: [new UglifyJsPlugin({
+            test: /\.js(\?.*)?$/i
+        })]
+    },
     module: {
         rules: [
             {
