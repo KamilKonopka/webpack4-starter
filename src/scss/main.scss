@@ -1,5 +1,7 @@
 $primary-color: red;
-
+* {
+  box-sizing: border-box;
+}
 div {
   color: $primary-color;
 }

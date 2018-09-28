@@ -7,11 +7,18 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
+const devMode = process.env.NODE_ENV === 'development';
+const port = process.env.PORT || 4200;
+
 module.exports = {
+    devtool: 'source-map',
     entry: ['babel-polyfill', './src/js/index.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[chunkhash].js'
+    },
+    devServer: {
+        port
     },
     plugins: [
       new CleanWebpackPlugin('dist', {}),
@@ -42,8 +49,13 @@ module.exports = {
                 }
       },
             {
-                test: /\.scss$/,
-                use: ['style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
+                test: /\.(scss|css)$/,
+                use: [
+                    devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    {loader: 'css-loader', options: {sourceMap: true}}, 
+                    {loader: 'postcss-loader', options: {sourceMap: true}},
+                    {loader: 'sass-loader', options: {sourceMap: true}}
+                ]
       },
             {
                 test: /\.(jpg|png|svg|gif|otf)$/,
