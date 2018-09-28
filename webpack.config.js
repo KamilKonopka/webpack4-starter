@@ -23,10 +23,10 @@ module.exports = {
     plugins: [
       new CleanWebpackPlugin('dist', {}),
       new HtmlWebpackPlugin({
+            template: './src/index.html',
             inject: false,
             hash: true,
-            filename: 'index.html',
-            template: './src/index.html'
+            filename: 'index.html'
         }),
 //    new ExtractTextPlugin({filename: 'style.[hash].css', disable: false, allChunks: true}
 //    ),
@@ -52,7 +52,7 @@ module.exports = {
                 test: /\.(scss|css)$/,
                 use: [
                     devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {loader: 'css-loader', options: {sourceMap: true}}, 
+                    {loader: 'css-loader', options: {sourceMap: true, minimize: true}}, 
                     {loader: 'postcss-loader', options: {sourceMap: true}},
                     {loader: 'sass-loader', options: {sourceMap: true}}
                 ]
