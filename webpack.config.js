@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const devMode = process.env.NODE_ENV === 'development';
 const port = process.env.PORT || 4200;
@@ -21,6 +22,15 @@ module.exports = {
     devServer: {
         port
     },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                test: /\.js(\?.*)?$/i,
+                parallel: true,
+                sourceMap: true
+            }),
+            new OptimizeCSSAssetsPlugin({})]
+    },
     plugins: [
       new CleanWebpackPlugin('dist', {}),
       new HtmlWebpackPlugin({
@@ -33,6 +43,7 @@ module.exports = {
 //    ),
     new MiniCssExtractPlugin({
             filename: 'style.[contenthash].css',
+            chunkFilename: "[id].css"
         }),
 
     new WebpackMd5Hash(),
@@ -40,11 +51,6 @@ module.exports = {
             plainSprite: true
         })
   ],
-    optimization: {
-        minimizer: [new UglifyJsPlugin({
-            test: /\.js(\?.*)?$/i
-        })]
-    },
     module: {
         rules: [
             {
