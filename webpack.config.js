@@ -1,10 +1,8 @@
-// webpack v4
 const path = require('path');
-//const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
@@ -32,43 +30,47 @@ module.exports = {
             new OptimizeCSSAssetsPlugin({})]
     },
     plugins: [
-      new CleanWebpackPlugin('dist', {}),
-      new HtmlWebpackPlugin({
+        new CleanWebpackPlugin({ dry: true, verbose: true}),
+        new HtmlWebpackPlugin({
             template: './src/index.html',
             inject: false,
             hash: true,
             filename: 'index.html'
         }),
-//    new ExtractTextPlugin({filename: 'style.[hash].css', disable: false, allChunks: true}
-//    ),
-    new MiniCssExtractPlugin({
+        new MiniCssExtractPlugin({
             filename: 'style.[contenthash].css',
-            chunkFilename: "[id].css"
+            chunkFilename: "[id].css",
+            ignoreOrder: false,
         }),
 
-    new WebpackMd5Hash(),
-    new SpriteLoaderPlugin({
+        new WebpackMd5Hash(),
+        new SpriteLoaderPlugin({
             plainSprite: true
         })
-  ],
+    ],
+    resolve: {
+        // Add `.ts` and `.tsx` as a resolvable extension.
+        extensions: [".ts", ".tsx", ".js"]
+    },
     module: {
         rules: [
+            { test: /\.tsx?$/, loader: "ts-loader" },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader"
                 }
-      },
+            },
             {
                 test: /\.(scss|css)$/,
                 use: [
                     devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {loader: 'css-loader', options: {sourceMap: true, minimize: true}}, 
+                    {loader: 'css-loader', options: {sourceMap: true}},
                     {loader: 'postcss-loader', options: {sourceMap: true}},
                     {loader: 'sass-loader', options: {sourceMap: true}}
                 ]
-      },
+            },
             {
                 test: /\.(jpg|png|svg|gif|otf)$/,
                 use: {
@@ -78,7 +80,7 @@ module.exports = {
                         outputPath: './images'
                     }
                 }
-        },
+            },
             {
                 test: /icons\/.*\.svg$/,
                 loader: 'svg-sprite-loader',
@@ -87,16 +89,7 @@ module.exports = {
                     spriteFilename: './public/dist/img/icons.svg',
                     runtimeCompat: true
                 }
-    }
-
-//      {
-//        test: /\.scss$/,
-//        use: ExtractTextPlugin.extract(
-//          {
-//            fallback: 'style-loader',
-//            use: ['css-loader', 'sass-loader']
-//          })
-//      }
-    ]
+            }
+        ]
     }
 };
