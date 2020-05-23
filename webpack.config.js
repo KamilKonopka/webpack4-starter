@@ -4,7 +4,7 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const devMode = process.env.NODE_ENV === 'development';
@@ -15,21 +15,17 @@ module.exports = {
     entry: ['babel-polyfill', './src/js/index.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[chunkhash].js'
+        filename: '[name].[hash].js'
     },
     devServer: {
         port
     },
     optimization: {
         minimizer: [
-            new UglifyJsPlugin({
-                test: /\.js(\?.*)?$/i,
-                parallel: true,
-                sourceMap: true
-            }),
             new OptimizeCSSAssetsPlugin({})]
     },
     plugins: [
+        new MinifyPlugin({}, {}),
         new CleanWebpackPlugin({ dry: true, verbose: true}),
         new HtmlWebpackPlugin({
             template: './src/index.html',
@@ -38,7 +34,7 @@ module.exports = {
             filename: 'index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: 'style.[contenthash].css',
+            filename: 'style.[hash].css',
             chunkFilename: "[id].css",
             ignoreOrder: false,
         }),
