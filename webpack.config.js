@@ -25,7 +25,11 @@ module.exports = {
             new OptimizeCSSAssetsPlugin({})]
     },
     plugins: [
-        new MinifyPlugin({}, {}),
+        new MinifyPlugin({}, {
+            test: /\.js($|\?)/i,
+            include: path.resolve(__dirname, 'src'),
+            sourceMap: false,
+        }),
         new CleanWebpackPlugin({ dry: true, verbose: true}),
         new HtmlWebpackPlugin({
             template: './src/index.html',
@@ -50,12 +54,18 @@ module.exports = {
     },
     module: {
         rules: [
-            { test: /\.tsx?$/, loader: "ts-loader" },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader"
+                    loader: "babel-loader",
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: [
+                            '@babel/plugin-proposal-object-rest-spread',
+                            '@babel/plugin-proposal-class-properties',
+                        ],
+                    }
                 }
             },
             {
