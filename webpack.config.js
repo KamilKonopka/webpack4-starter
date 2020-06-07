@@ -4,7 +4,6 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -30,7 +29,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin({ dry: true, verbose: true}),
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             inject: false,
