@@ -6,6 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const devMode = process.env.NODE_ENV === 'development';
 const port = process.env.PORT || 4200;
@@ -22,14 +23,13 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new OptimizeCSSAssetsPlugin({})]
+            new OptimizeCSSAssetsPlugin({}),
+            new UglifyJsPlugin({
+                test: /\.js($|\?)/i,
+            })
+        ]
     },
     plugins: [
-        new MinifyPlugin({}, {
-            test: /\.js($|\?)/i,
-            include: path.resolve(__dirname, 'src'),
-            sourceMap: false,
-        }),
         new CleanWebpackPlugin({ dry: true, verbose: true}),
         new HtmlWebpackPlugin({
             template: './src/index.html',
